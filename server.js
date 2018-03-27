@@ -14,12 +14,13 @@ const flash=require('connect-flash');
 const passport=require('passport');
 const socketIO=require('socket.io');
 const {Users}=require('./helpers/UsersClass');
+const {Global}=require('./helpers/Global');
 
 
 const container=require('./container');
 
 
-container.resolve(function(users,_,admin,home,group){
+container.resolve(function(users,_,admin,home,group,results){
 
   mongoose.Promise=global.Promise;
   mongoose.connect('mongodb://localhost/footballkik');
@@ -51,6 +52,7 @@ function SetupExpress(){
 
   require('./socket/groupchat')(io,Users);//pass the UsersClass data to the groupchat
   require('./socket/friend')(io);
+  require('./socket/globalroom')(io,Global);
 
   //Setup router
   const router=require('express-promise-router')();
@@ -58,6 +60,8 @@ function SetupExpress(){
   admin.SetRouting(router);
   home.SetRouting(router);
   group.SetRouting(router);
+  results.SetRouting(router);
+
 
 
   app.use(router);
