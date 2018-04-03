@@ -101,8 +101,8 @@
                         <div class="row">
                             <div class="new_message_head">
                                 <div class="pull-left">
-                                <button class="club_name">
-                                  <%= groupName%>
+                                <button id="receiver_name">
+
                                 </button>
                                 </div>
                                 <div class="pull-right">
@@ -111,20 +111,33 @@
 
                             <div class="chat_area">
                               <ul id="messages" class="list-unstyled">
-                                <% _.forEach(groupMsg,function(val){ %>
-                                  <% if(groupName===val.name){%>
-                                <li class="left" >
+                                <% if(chats.length>0){%>
+                                <% _.forEach(chats,function(val){ %>
+                                  <% if(name===val.receiver.username.toLowerCase()){%>
+                                 <li class="left" >
                                   <span class="chat-img1 pull-left">
                                     <img src="https://placehold.it/300x300" class="img-circle" alt="">
                                   </span>
                                   <div class="chat-body1">
-                                    <span class="chat-name"><%= val.sender.username %></span>
+                                    <span class="chat-name"><%= val.senderName%></span>
                                     <br>
-                                    <%= val.body%>
+                                    <%= val.message%>
                                   </div>
                                 </li>
-                                  <%} %>
+                                  <%} else if(name===val.sender.username.toLowerCase()){%>
+                                    <li class="left" >
+                                     <span class="chat-img1 pull-left">
+                                       <img src="https://placehold.it/300x300" class="img-circle" alt="">
+                                     </span>
+                                     <div class="chat-body1">
+                                       <span class="chat-name"><%= val.senderName%></span>
+                                       <br>
+                                       <%= val.message%>
+                                     </div>
+                                   </li>
+                                    <%} %>
                                   <%}) %>
+                                    <%} %>
 
                               </ul>
                               <script id="message-template" type="text/template">
@@ -143,10 +156,8 @@
                             </div>
 
                             <div class="message_write">
-                              <form  id="message-form" method="post">
-                                <input type="hidden" name="groupName" id="groupName" value="<%=groupName %>">
-                                <input type="hidden" name="sender" id="sender" value="<%=
-                               user.username %>">
+                              <form  id="message_form" method="post">
+
 
                                   <textarea class="form-control" name="message" id="msg" placeholder="Type a message"></textarea>
                                   <div class="clearfix"></div>
@@ -160,57 +171,7 @@
                         </div>
                     </div>
 
-                    <div class="col-sm-3 col-md-3 mob-50 mob-clearfix">
 
-
-                        <div class="new_message_head">
-                            <div class="pull-left">
-                                <button class="club_fans">
-                                    <i class="fa fa-users" aria-hidden="true" style="padding-right:15px; color:#4aa1f3 !important;"></i>
-                                    Online Club Fans <span id="numValue"></span>
-                                </button>
-                            </div>
-                        </div>
-
-
-
-                        <div class="gr-rightsidebar">
-
-                            <div id="myModal" class="modal fade" role="dialog">
-                              <div class="modal-dialog">
-
-                                <div class="modal-content">
-                                  <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    <h3 class="modal-title" id="name"></h3>
-                                  </div>
-                                  <div class="modal-body">
-                                    <form action="" method="get" id="add_friend">
-                                        <input type="hidden" name="receiverName" id="receiverName" value="">
-                                        <input type="hidden" name="sender-name" id="sender-name" value="<%= user.username %>">
-                                        <button type="submit" id="friend-add" class="btn add"><i class="fa fa-user"></i> Add Friend</button>
-
-                                        <a id="nameLink" class="btn ">View Profile</a>
-
-                                        <div id="myTest">
-
-                                        </div>
-                                    </form>
-                                  </div>
-                                  <div class="modal-footer">
-                                    <button type="button" class="btn btn_close" data-dismiss="modal">Close</button>
-                                  </div>
-                                </div>
-
-                              </div>
-                            </div>
-
-                            <div class="col-md-12"  id="main">
-                                <div id="users"></div>
-
-                            </div>
-
-                        </div>
                     </div>
 
                 </div>
@@ -226,10 +187,10 @@
 integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
 crossorigin="anonymous"></script>
 <script src="/socket.io/socket.io.js"></script>
-<script src="/js/group/groupchat.js"></script>
+<script src="/js/privatechat/pm.js"></script>
 <script src="/js/group/sendrequest.js"></script>
-<script src="/js/global.js"></script>
 <script src="/js/messagelink.js"></script>
+<script src="/js/global.js"></script>
 <script src="/js/deparam.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
 </body>

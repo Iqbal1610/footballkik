@@ -54,5 +54,17 @@ $(document).ready(function(){
     },function(){
       $('#msg').val('');//when click send input area cleared
     });
+
+    $.ajax({
+      url:'/group/'+room,
+      type:'POST',
+      data:{
+        message:msg,
+        groupName:room
+      },
+      success:function(){
+          $('#msg').val('');
+      }
+    })
   });
 });

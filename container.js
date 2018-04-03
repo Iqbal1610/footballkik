@@ -10,6 +10,8 @@ const simpleDependencies=[
   ['async','async'],
   ['Club','./models/clubs'],
   ['Users','./models/user'],
+  ['Message','./models/message'],
+  ['Group','./models/groupmessage'],
   ['aws','./helpers/AWSUpload'],//used for save image in amazon webserver
 
 ];

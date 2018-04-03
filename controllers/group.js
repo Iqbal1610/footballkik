@@ -1,6 +1,6 @@
 
 
-module.exports=function(Users,async){
+module.exports=function(Users,async,Message,FriendResult,Group){
 
   return {
     SetRouting: function(router){
@@ -17,136 +17,80 @@ module.exports=function(Users,async){
                .exec((err,result)=>{
                  callback(err,result);
                })
-        }
+        },
+
+        //get private message from database
+
+        function(callback){
+            const nameRegex=new RegExp("^"+req.user.username.toLowerCase(),"i");
+          Message.aggregate([
+            {$match:{$or:[{'senderName':nameRegex},{'receiverName':nameRegex}]}},
+            {$sort:{'createdAt':-1}},
+            {
+              $group:{"_id":{
+                "last_message_between":{
+                  $cond:[//cond condition operator in mongodb
+                    {
+                      $gt:[//gt greaterthan operator in mongodb
+                        {$substr:["$senderName",0,1]},//$substr sub String
+                        {$substr:["$receiverName",0,1]}
+                      ]
+                    },
+                    {$concat:["$senderName"," and ","$receiverName"]},//concat concatenation operator
+                    {$concat:["$receiverName"," and ","$senderName"]}
+
+                  ]
+                }
+              },"body":{$first:"$$ROOT"}//return the document of the current user update message
+            }
+          }
+        ],function(err,newResult){
+          //console.log(newResult);
+          callback(err,newResult);
+        });
+      },
+    // find all groupmessage from database for a particular group
+      function(callback){
+        Group.find({})
+        .populate('sender')
+        .exec((err,result)=>{
+          callback(err,result);
+        });
+      }
+
       ],(err,results)=>{
         const result1=results[0];
+        const result2=results[1];
+        const result3=results[2];
         //console.log(result1);
-        res.render('groupchat/group',{title:'Footballkik - Group',user:req.user,groupName:name,data:result1});
+        res.render('groupchat/group',{title:'Footballkik - Group',user:req.user,
+        groupName:name,data:result1,chat:result2,groupMsg:result3});
       });
 
     },
-  groupPostPage:function(req,res){
-    async.parallel([//sending friend request
+  groupPostPage:function(req,res){//friendRequest request functionality is in helper folder
+    FriendResult.PostRequest(req,res,'/group/'+req.params.name);
+
+    async.parallel([
       function(callback){
-        if(req.body.receiverName){
-          Users.update({
-            'username':req.body.receiverName,
-            'request.userId':{$ne: req.user._id},//$ne is the mongodb not equal sign
-            'friendsList.friendId':{$ne:req.user._id}
-            },
-            {
-              $push:{request:{
-                userId:req.user._id,
-                username:req.user.username
-              }},
-              $inc:{totalRequest:1}
-            },(err,count)=>{
-              callback(err,count);
-            })
-        }
-      },
-      function(callback){
-        if(req.body.receiverName){
-          Users.update({
-            'username':req.user.username,
-            'sentRequest.username':{$ne:req.body.receiverName}
-          },
-          {
-            $push:{sentRequest:{
-              username:req.body.receiverName
-            }}
-          },(err,count)=>{
-            callback(err,count);
+        if(req.body.message){//message is the name of the textarea in group.ejs
+          const group=new Group();
+          group.sender=req.user._id;
+          group.body=req.body.message;
+          group.name=req.body.groupName;
+          group.createdAt=new Date();
+
+          group.save((err,msg)=>{
+            //console.log(msg);
+            callback(err,msg);
           })
+
         }
       }
     ],(err,results)=>{
       res.redirect('/group/'+req.params.name);
-    });
+    })
 
-  async.parallel([//Accepting friendRequest
-//this func is updated for the receiver of the friend request when it is accepted
-    function(callback){
-      if(req.body.senderId){
-        Users.update({
-          '_id':req.user._id,
-          'friendsList.friendId':{$ne:req.body.senderId}
-        },{
-          $push:{friendsList:{
-            friendId:req.body.senderId,
-            friendName:req.body.senderName
-          }},
-          $pull:{request:{//pull method used in mongodb to remove the data form database
-            userId:req.body.senderId,
-            username:req.body.senderName
-          }},
-          $inc:{totalRequest:-1}
-        },(err,count)=>{
-          callback(err,count);
-        });
-      }
-    },
-    //this func is updated for the sender of the friend request when it is accepted by the receiver
-    function(callback){
-      //for update sender data
-      if(req.body.senderId){
-        Users.update({
-          '_id':req.body.senderId,
-          'friendsList.friendId':{$ne:req.user._id}//here req.user._id of the receiver
-        },{
-          $push:{friendsList:{
-            friendId:req.user._id,
-            friendName:req.body.senderName
-          }},
-          $pull:{sentRequest:{//pull method used in mongodb to remove the data form database
-          username:req.user.username
-          }},
-
-        },(err,count)=>{
-          callback(err,count);
-        });
-      }
-    },
-
-    //this func is updated for the receiver of the friend request when it is cancel
-    function(callback){
-
-      if(req.body.user_Id){
-        Users.update({
-          '_id':req.user._id,
-          'request.userId':{$eq:req.body.user_Id}//$eq stands for isequal
-        },{
-          $pull:{request:{//pull method used in mongodb to remove the data form database
-          userId:req.body.user_Id
-          }},
-          $inc:{totalRequest:-1}
-
-        },(err,count)=>{
-          callback(err,count);
-        });
-      }
-    },
-
-    //this func is updated for the sender of the friend request when it is cancel
-    function(callback){
-
-      if(req.body.user_Id){
-        Users.update({
-          '_id':req.body.user_Id,
-          'sentRequest.username':{$eq:req.user.username}//$eq stands for isequal
-        },{
-          $pull:{sentRequest:{//pull method used in mongodb to remove the data form database
-          username:req.user.username
-          }}
-          },(err,count)=>{
-          callback(err,count);
-        });
-      }
-    }
-
-  ],(err,results)=>{
-      res.redirect('/group/'+req.params.name);
-  });
 },
 logout:function(req,res){
   req.logout();

@@ -20,7 +20,7 @@ const {Global}=require('./helpers/Global');
 const container=require('./container');
 
 
-container.resolve(function(users,_,admin,home,group,results){
+container.resolve(function(users,_,admin,home,group,results,privatechat){
 
   mongoose.Promise=global.Promise;
   mongoose.connect('mongodb://localhost/footballkik');
@@ -53,6 +53,7 @@ function SetupExpress(){
   require('./socket/groupchat')(io,Users);//pass the UsersClass data to the groupchat
   require('./socket/friend')(io);
   require('./socket/globalroom')(io,Global);
+  require('./socket/privatemessage')(io);
 
   //Setup router
   const router=require('express-promise-router')();
@@ -61,6 +62,7 @@ function SetupExpress(){
   home.SetRouting(router);
   group.SetRouting(router);
   results.SetRouting(router);
+  privatechat.SetRouting(router);
 
 
 
@@ -91,7 +93,7 @@ function ConfigureExpress(app){
   app.use(flash());
   app.use(passport.initialize());
   app.use(passport.session());
-  app.locals._=_;//for use lodash in any type of file like js,ejs etc
+  app.locals._=_;//for use lodash in any type of file like js,ejs etc as global variable
 }
 
 });
