@@ -24,7 +24,19 @@ const userSchema=mongoose.Schema({
     friendName:{type:String, default:''}
 
   }],
-  totalRequest:{type:Number,default:0}
+  totalRequest:{type:Number,default:0},
+  gender:{type:String,default: ''},
+  country:{type:String,default: ''},
+  mantra:{type:String,default: ''},
+  favNationalTeam:[{
+    teamName:{type:String,default: ''}
+  }],
+  favPlayer:[{
+    playerName:{type:String,default: ''}
+  }],
+  favClub:[{
+    clubName:{type:String}
+  }]
 
 });
 

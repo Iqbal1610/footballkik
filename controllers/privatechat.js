@@ -97,7 +97,7 @@ module.exports=function(async,Users,Message,FriendResult){
             if(err){
               return next(err);
             }
-            console.log(result);
+            //console.log(result);
             callback(err,result);
           })
         }
