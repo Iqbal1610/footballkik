@@ -46,7 +46,16 @@ module.exports=function(Users,async,Message,FriendResult,Group){
           }
         ],function(err,newResult){
           //console.log(newResult);
-          callback(err,newResult);
+          //for getting Notifications message user userImage
+          const arr=[
+            {path:'body.sender',model:'User'},
+            {path:'body.receiver',model:'User'}
+          ];
+          Message.populate(newResult,arr,(err,newResult1)=>{
+            //console.log(newResult1);
+            callback(err,newResult1);
+          })
+
         });
       },
     // find all groupmessage from database for a particular group
