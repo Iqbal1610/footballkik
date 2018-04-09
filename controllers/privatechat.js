@@ -40,7 +40,15 @@ module.exports=function(async,Users,Message,FriendResult){
           }
         ],function(err,newResult){
           //console.log(newResult);
-          callback(err,newResult);
+          //for getting Notifications message user userImage
+          const arr=[
+            {path:'body.sender',model:'User'},
+            {path:'body.receiver',model:'User'}
+          ];
+          Message.populate(newResult,arr,(err,newResult1)=>{
+            //console.log(newResult1);
+            callback(err,newResult1);
+          })
         });
       },
 //this function returns the message between sender and receiver as array
