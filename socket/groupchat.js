@@ -20,7 +20,8 @@ module.exports=function(io,Users){//here Users come from helpers
       io.to(message.room).emit('newMessage',{//io,to() is used for send message every member of the group
         text:message.text,
         room:message.room,
-        from:message.sender
+        from:message.sender,
+        image:message.userPic
       });
       callback();
     });

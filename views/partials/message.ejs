@@ -31,14 +31,12 @@
 
               <% if(chat.length>0){%>
               <% _.forEach(chat,function(val){ %>
-
                 <% if(user.username!==val.body.senderName){%>
-
                 <a data-value="<%= val.body._id%>" id="messageLink" href="/chat/<%=_.lowerCase(val.body.senderName)%>.<%= _.lowerCase(user.username)%>">
                 <div class="row">
                     <div class="col-md-3">
                         <p class="text-center">
-                           <img src="https://placehold.it/300x300" class="img-circle img-responsive dropdown-img" />
+                           <img src="http://localhost:3000/profileImage/<%=val.body.sender.userImage %>" class="img-circle img-responsive dropdown-img" />
                         </p>
                     </div>
                     <div class="col-md-9 pleft-0">
@@ -65,7 +63,7 @@
                   <div class="row">
                       <div class="col-md-3">
                           <p class="text-center">
-                             <img src="https://placehold.it/300x300" class="img-circle img-responsive dropdown-img" />
+                             <img src="http://localhost:3000/profileImage/<%=val.body.sender.userImage %>" class="img-circle img-responsive dropdown-img" />
                           </p>
                       </div>
                       <div class="col-md-9 pleft-0">
