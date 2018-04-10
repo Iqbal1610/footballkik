@@ -55,7 +55,7 @@ function LoadData(divClass){
     },2000);
   });
 
-  $('#linktop').click(function(){
+  $('#linkTop').click(function(){
     $('html,body').animate({
       scrollTop:0
     },500);
