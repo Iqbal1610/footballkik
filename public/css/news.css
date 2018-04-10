@@ -5,5 +5,35 @@
 }
 
 .news-bottom{
-  margin-bottom: 40px;
+  margin-bottom: 30px;
+}
+
+.news-post{
+  background:white;
+  padding: 20px;
+  margin-top:50px;
+}
+
+.news-date{
+  color: #333333!important;
+}
+.news-text{
+  font-size: 18px;
+  color: #333333 !important;
+}
+#loadMore{
+  padding: 10px;
+  font-weight: bold;
+  font-size: 18px;
+  background-color: #4aa1f3;
+  color: #fff;
+}
+
+#linktop{
+  text-decoration: none!important;
+  color: #4aa1f3!important;
+}
+
+.paginate{
+  display: none;
 }
