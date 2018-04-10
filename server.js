@@ -20,7 +20,7 @@ const {Global}=require('./helpers/Global');
 const container=require('./container');
 
 
-container.resolve(function(users,_,admin,home,group,results,privatechat,profile,interests){
+container.resolve(function(users,_,admin,home,group,results,privatechat,profile,interests,news){
 
   mongoose.Promise=global.Promise;
   mongoose.connect('mongodb://localhost/footballkik');
@@ -65,6 +65,7 @@ function SetupExpress(){
   privatechat.SetRouting(router);
   profile.SetRouting(router);
   interests.SetRouting(router);
+  news.SetRouting(router);
 
 
 
