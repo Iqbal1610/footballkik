@@ -1,4 +1,4 @@
-module.exports=function(async,Club,Users){
+module.exports=function(async,Club,Users,_){
   return{
     SetRouting:function(router){
       router.get('/results',this.getResults);
@@ -8,7 +8,22 @@ module.exports=function(async,Club,Users){
       router.post('/members',this.searchMembers);
     },
     getResults:function(req,res){
-    res.redirect('/home');
+      async.parallel([
+        function(callback){
+          Club.aggregate([{
+            $group:{
+              _id:"$country"
+            }
+          }],(err,newResult)=>{
+            callback(err,newResult);
+          });
+        }
+      ],(err,results)=>{
+        const res1=results[0];
+        console.log(res1);
+        res.render('results',{user:req.used});
+      });
+
     },
     postResults:function(req,res){
       async.parallel([

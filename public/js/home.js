@@ -12,7 +12,7 @@ $('#favorite').on('submit',function(e){
       clubName:clubName
     },
     success:function(){
-      console.log(clubName);
+      //console.log(clubName);
     }
   })
 });
